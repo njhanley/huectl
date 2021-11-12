@@ -1,0 +1,17 @@
+[[package]]
+name = "phue"
+version = "1.1"
+description = "A Philips Hue Python library"
+category = "main"
+optional = false
+python-versions = "*"
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.9"
+content-hash = "75aaab3282a4da6029b905c2b0ac43ea0985444b4647f91a85266cd303507154"
+
+[metadata.files]
+phue = [
+    {file = "phue-1.1.tar.gz", hash = "sha256:61facc991a2ead1d727df8513d06ce089033489b6dca09be093db24f7cdb8874"},
+]
