@@ -2,6 +2,7 @@
 name = "huectl"
 version = "0.1.0"
 description = "Philips Hue smart light CLI controller."
+license = "MIT"
 authors = ["Nick Hanley <nicholasjhanley@gmail.com>"]
 repository = "https://github.com/njhanley/huectl"
 
