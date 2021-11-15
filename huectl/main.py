@@ -28,33 +28,27 @@ def cmd_light(args):
 
 
 parser_light = subparsers.add_parser("light")
-parser_light.add_argument("name", choices=[light.name for light in bridge.lights])
+parser_light.add_argument("name")
 parser_light.add_argument("state", choices=["on", "off"])
 parser_light.set_defaults(cmd=cmd_light)
 
 
-def group_id(scene):
-    scene_lights = set(scene.lights)
-    for group in bridge.groups:
-        group_lights = set(light.light_id for light in group.lights)
-        if group_lights == scene_lights:
-            return group.group_id
-
-
-scenes = {
-    scene.name: (group_id(scene), scene.scene_id)
-    for scene in bridge.scenes
-    if not scene.recycle
-}
-
-
 def cmd_scene(args):
-    scene = scenes[args.name]
-    bridge.activate_scene(*scene)
+    scene = next(
+        scene
+        for scene in bridge.scenes
+        if scene.name == args.name and not scene.recycle
+    )
+    group = next(
+        group
+        for group in bridge.groups
+        if [light.light_id for light in group.lights] == scene.lights
+    )
+    bridge.activate_scene(group.group_id, scene.scene_id)
 
 
 parser_scene = subparsers.add_parser("scene")
-parser_scene.add_argument("name", choices=scenes.keys())
+parser_scene.add_argument("name")
 parser_scene.set_defaults(cmd=cmd_scene)
 
 args = parser.parse_args()
