@@ -1,29 +1,27 @@
 from argparse import ArgumentParser
 from os.path import exists, expanduser
 from phue import Bridge, PhueRegistrationException
-from sys import exit
+from sys import exit, stderr
 
 config_path = expanduser("~/.huectl")
 
-if exists(config_path):
-    bridge = Bridge(config_file_path=config_path)
-else:
-    print(
-        "No config found. Press the link button on your bridge before entering its address."
-    )
-    address = input("hue bridge address: ")
-    print("Testing connection...")
-    try:
-        bridge = Bridge(ip=address, config_file_path=config_path)
-        print("Success!")
-    except PhueRegistrationException as e:
-        exit(e.message)
+
+def with_bridge(func):
+    def decorator(*args, **kwargs):
+        if not exists(config_path):
+            exit("No config found. Run `huectl register`.")
+        bridge = Bridge(config_file_path=config_path)
+        return func(bridge, *args, **kwargs)
+
+    return decorator
+
 
 parser = ArgumentParser("huectl")
 subparsers = parser.add_subparsers()
 
 
-def cmd_light(args):
+@with_bridge
+def cmd_light(bridge, args):
     bridge[args.name].on = {"on": True, "off": False}[args.state]
 
 
@@ -33,7 +31,21 @@ parser_light.add_argument("state", choices=["on", "off"])
 parser_light.set_defaults(cmd=cmd_light)
 
 
-def cmd_scene(args):
+def cmd_register(args):
+    try:
+        Bridge(ip=args.address, config_file_path=config_path)
+        print("Success!", file=stderr)
+    except PhueRegistrationException as e:
+        exit("Failed: " + e.message)
+
+
+parser_register = subparsers.add_parser("register")
+parser_register.add_argument("address")
+parser_register.set_defaults(cmd=cmd_register)
+
+
+@with_bridge
+def cmd_scene(bridge, args):
     scene = next(
         scene
         for scene in bridge.scenes
