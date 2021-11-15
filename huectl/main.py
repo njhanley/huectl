@@ -21,6 +21,18 @@ subparsers = parser.add_subparsers()
 
 
 @with_bridge
+def cmd_group(bridge, args):
+    group = next(group for group in bridge.groups if group.name == args.name)
+    group.on = {"on": True, "off": False}[args.state]
+
+
+parser_light = subparsers.add_parser("group")
+parser_light.add_argument("name")
+parser_light.add_argument("state", choices=["on", "off"])
+parser_light.set_defaults(cmd=cmd_group)
+
+
+@with_bridge
 def cmd_light(bridge, args):
     bridge[args.name].on = {"on": True, "off": False}[args.state]
 
