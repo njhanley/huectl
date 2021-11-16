@@ -1,7 +1,8 @@
 from argparse import ArgumentParser
 from os.path import exists, expanduser
-from phue import Bridge, PhueRegistrationException
 from sys import exit, stderr
+
+from phue import Bridge, PhueRegistrationException
 
 config_path = expanduser("~/.huectl")
 
