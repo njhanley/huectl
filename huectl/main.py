@@ -76,8 +76,14 @@ parser_scene = subparsers.add_parser("scene")
 parser_scene.add_argument("name")
 parser_scene.set_defaults(cmd=cmd_scene)
 
-args = parser.parse_args()
-try:
-    args.cmd(args)
-except AttributeError:
-    parser.print_help()
+
+def main():
+    args = parser.parse_args()
+    try:
+        args.cmd(args)
+    except AttributeError:
+        parser.print_help()
+
+
+if __name__ == "__main__":
+    exit(main())
