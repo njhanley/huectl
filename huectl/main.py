@@ -93,10 +93,11 @@ parser_scene.set_defaults(cmd=cmd_scene)
 def main():
     args = parser.parse_args()
     try:
-        return args.cmd(args)
+        cmd = args.cmd
     except AttributeError:
         parser.print_usage()
         return 2
+    return cmd(args)
 
 
 if __name__ == "__main__":
