@@ -4,6 +4,8 @@ from sys import exit
 
 from phue import Bridge, PhueRegistrationException
 
+from huectl.util import first
+
 config_path = expanduser("~/.huectl")
 
 
@@ -25,7 +27,7 @@ subparsers = parser.add_subparsers()
 
 @with_bridge
 def cmd_group(bridge, args):
-    group = bridge.get_group(args.name)
+    group = first(group for group in bridge.groups if group.name == args.name)
     if group is None:
         return "No such group."
     group.on = {"on": True, "off": False}[args.state]
@@ -40,7 +42,7 @@ parser_light.set_defaults(cmd=cmd_group)
 
 @with_bridge
 def cmd_light(bridge, args):
-    light = bridge.get_light(args.name)
+    light = first(light for light in bridge.lights if light.name == args.name)
     if light is None:
         return "No such light."
     light.on = {"on": True, "off": False}[args.state]
@@ -68,15 +70,14 @@ parser_register.set_defaults(cmd=cmd_register)
 
 @with_bridge
 def cmd_scene(bridge, args):
-    try:
-        scene = next(
-            scene
-            for scene in bridge.scenes
-            if scene.name == args.name and not scene.recycle
-        )
-    except StopIteration:
+    scene = first(
+        scene
+        for scene in bridge.scenes
+        if scene.name == args.name and not scene.recycle
+    )
+    if scene is None:
         return "No such scene."
-    group = next(
+    group = first(
         group
         for group in bridge.groups
         if [light.light_id for light in group.lights] == scene.lights
