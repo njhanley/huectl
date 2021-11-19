@@ -93,7 +93,7 @@ def main():
     try:
         return args.cmd(args)
     except AttributeError:
-        parser.print_help()
+        parser.print_usage()
         return 2
 
 
