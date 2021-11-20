@@ -27,7 +27,9 @@ subparsers = parser.add_subparsers()
 
 @with_bridge
 def cmd_group(bridge, args):
-    group = first(group for group in bridge.groups if group.name == args.name)
+    group = first(
+        group for group in bridge.groups if group.name.lower() == args.name.lower()
+    )
     if group is None:
         return "No such group."
     group.on = {"on": True, "off": False}[args.state]
@@ -42,7 +44,9 @@ parser_light.set_defaults(cmd=cmd_group)
 
 @with_bridge
 def cmd_light(bridge, args):
-    light = first(light for light in bridge.lights if light.name == args.name)
+    light = first(
+        light for light in bridge.lights if light.name.lower() == args.name.lower()
+    )
     if light is None:
         return "No such light."
     light.on = {"on": True, "off": False}[args.state]
@@ -73,7 +77,7 @@ def cmd_scene(bridge, args):
     scene = first(
         scene
         for scene in bridge.scenes
-        if scene.name == args.name and not scene.recycle
+        if scene.name.lower() == args.name.lower() and not scene.recycle
     )
     if scene is None:
         return "No such scene."
