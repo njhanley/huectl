@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "huectl"
-version = "0.2.0"
+version = "0.2.1"
 description = "Philips Hue smart light CLI controller."
 license = "MIT"
 authors = ["Nick Hanley <nicholasjhanley@gmail.com>"]

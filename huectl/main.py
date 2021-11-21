@@ -20,7 +20,7 @@ def with_bridge(func):
 
 
 parser = ArgumentParser("huectl")
-parser.add_argument("--version", action="version", version="%(prog)s 0.2.0")
+parser.add_argument("--version", action="version", version="%(prog)s 0.2.1")
 
 subparsers = parser.add_subparsers()
 
